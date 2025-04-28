@@ -1,2 +1,1 @@
-# WebApp-Frameworks
-Лабораторные работы по курсу фреймворки web-приложений
+# Web 2, 3 lab works
