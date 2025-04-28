@@ -1,0 +1,60 @@
+services:
+  auth:
+    build: ./auth-service
+    ports: ["3000:3000"]
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: "alexei"
+      DB_NAME: gymdb
+      JWT_SECRET: 4f5053e65d24a787c8632b969be2576acff850f1914e64dbb336153a0c8e3ee26dcc786140f595aa94bda731c44560dc7b3fec7f8a46f9f3ba62bcd0fa9e2462cbeba90eb95130bc2da1b0a4896379295e16e3478890e8fe98bc50ac4134bc32a7599bb484bb01806546dcd56b1ed429038029ab7191bd4e73556480e996f22bb889dfdfe625b430c89294e644185e81aae665a1ca72b43452b50c4a1a929c12856e7c0678aa59c1a87536580cc87af4d777a59e22c7521bd97ac1547fdbc16a9925233851b8542f9e95bb026e57db2391c0664ab2287c8303e2266d3c78af533d6cbb04aeb3c94423f069f8114b640c8a02dc3e9895825ccb97576c971d2e1d
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  visits:
+    build: ./visits-service
+    ports: ["3001:3001"]
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: "alexei"
+      DB_NAME: gymdb
+      JWT_SECRET: 4f5053e65d24a787c8632b969be2576acff850f1914e64dbb336153a0c8e3ee26dcc786140f595aa94bda731c44560dc7b3fec7f8a46f9f3ba62bcd0fa9e2462cbeba90eb95130bc2da1b0a4896379295e16e3478890e8fe98bc50ac4134bc32a7599bb484bb01806546dcd56b1ed429038029ab7191bd4e73556480e996f22bb889dfdfe625b430c89294e644185e81aae665a1ca72b43452b50c4a1a929c12856e7c0678aa59c1a87536580cc87af4d777a59e22c7521bd97ac1547fdbc16a9925233851b8542f9e95bb026e57db2391c0664ab2287c8303e2266d3c78af533d6cbb04aeb3c94423f069f8114b640c8a02dc3e9895825ccb97576c971d2e1d
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
+        tag: '{{.Name}}/{{.ID}}'
+
+#####FRONTEND
+  host-app:
+    build:
+      context: ./frontend/host-app
+    ports:
+      - "4000:80"
+    networks:
+      - frontend-net
+
+  microfrontend-rtk:
+    build:
+      context: ./frontend/microfrontend-rtk
+    ports:
+      - "4001:80"
+    networks:
+      - frontend-net
+
+  microfrontend-mobx:
+    build:
+      context: ./frontend/microfrontend-mobx
+    ports:
+      - "4002:80"
+    networks:
+      - frontend-net
+
+networks:
+  frontend-net:
+    driver: bridge
